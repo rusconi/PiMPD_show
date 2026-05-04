@@ -31,5 +31,37 @@ Installation
 
    If it works, stop the script and install
 3. Full Installation
+
    This will install the script and its associated files in /opt/PiMPD_show, then install, enable and run it as a service.
+   The shell script pimpd_manager.sh allows you to install or uninstall the scripts and service as well as starting, stopping, restarting or getting the status of the service
+   Usage: pimpd_manager.sh {install|uninstall|start|stop|restart|status}
+
+   to install the script must be run as superuser
+   ```sh
+   sudo bash pimpd_manager.sh install
+   ```
+
+Usage
+
+There are options for 4 buttons
+text
+pause
+next
+prev
+The settings file 'settings.yaml' describes their actions
+To edit
+```sh
+bash edit_settings.sh
+```
+The darkness of the background image can be adjusted in settings.yaml
+the layout options between standard [e.g. 320x240] oe horizontal [e.g. 170x320] can be changed in settings.yaml
+Each time you change the settings run
+```sh
+sudo bash pimpd_manager.sh restart
+```
+so they take effect
+
+
+   
+
    
