@@ -5,7 +5,7 @@
 from mpd import MPDClient
 from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageFilter #, ImageStat, ImageColor, ImageOps
 from framebuffer import Framebuffer  # pytorinox
-#import time
+import time
 import os
 import os.path
 from os import path
@@ -27,6 +27,7 @@ import logging
 
 
 script_path = os.path.dirname(os.path.abspath( __file__ ))
+START_TIME = time.time()
 confile = 'settings.yaml'
 # set script path as current directory - 
 os.chdir(script_path)
@@ -50,6 +51,11 @@ logging.basicConfig(
     format='%(asctime)s: %(message)s', #'%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
+
+def get_uptime():
+    """Returns the uptime of the script in a readable format."""
+    uptime_seconds = time.time() - START_TIME
+    return time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
 def load_config(confile):
     try:
@@ -114,18 +120,21 @@ def button_callback(channel):
     This function is called by any button press event.
     The 'channel' argument identifies the specific pin that was triggered.
     """
+    global layout
     client = MPDClient()
     client.timeout = None  # Important: idle can take a long time
     client.connect("localhost", 6600)
     song = client.currentsong()
     status = client.status()
     if channel == txt_b:
+        max_cycles = 3 - layout
+        
         #print("Button 1 (Pin 17) was pressed!")
         # Add specific actions for Button 1 here
         # Change the boolean value when button presses
         global cover_only
         cover_only = cover_only + 1
-        if cover_only > 2: cover_only = 0
+        if cover_only > max_cycles: cover_only = 0
         #update display
         mpd_display(client)
     else:
@@ -383,9 +392,10 @@ def screen_fill_std(screen_text, cover_image, mpd_status, source):
     back_img.paste(dark_cover_img, (0, y_offset))
     front_img = cover_image.resize((scr_height,scr_height), Image.LANCZOS)
 
-    if cover_only == 1:
+    if cover_only == 1 or cover_only == 2:
         back_img.paste(front_img, (int((scr_width-scr_height)/2), 0))
-    elif cover_only == 0:
+
+    if cover_only < 2:
         #back_img.paste(black_scr)
         #fb.show(buffer)
    
@@ -399,12 +409,12 @@ def screen_fill_std(screen_text, cover_image, mpd_status, source):
 
     #back_img = back_img.resize((scr_width,scr_width), Image.LANCZOS)
     if log is True:
-        logdata = moode_meta.get('title','#')+ " - " +  moode_meta.get('artist','#') + ' - ' + moode_meta.get('album','#') + ' : ' + mpd_status['state'] + ' : ' + get_uptime()
+        logdata = mpd_status.get('title','#')+ " - " +  mpd_status.get('artist','#') + ' - ' + mpd_status.get('album','#') + ' : ' + mpd_status['state'] + ' : ' + get_uptime()
         logging.info(logdata)
 
     
 
-    if cover_only == 2:
+    if cover_only == 3:
         fb.clear()
     else:
         buffer.paste(back_img, (0, 0))
@@ -489,6 +499,7 @@ def screen_fill_horiz(screen_text, cover_image, mpd_status, source):
     p_off = int(font_size * 1.5)
     #back_img.paste(back_cover_img, (0, -40))
 
+    
     if cover_only == 1:
         back_img.paste(big_cover, (int((scr_width-scr_height)/2), 0))
     elif cover_only == 0:
@@ -509,10 +520,10 @@ def screen_fill_horiz(screen_text, cover_image, mpd_status, source):
         back_img = back_img.resize((fb.size), Image.LANCZOS)'''
     
     if log is True:
-        logdata = moode_meta.get('title','#')+ " - " +  moode_meta.get('artist','#') + ' - ' + moode_meta.get('album','#') + ' : ' + mpd_status['state'] + ' : ' + get_uptime()
+        logdata = mpd_status.get('title','#')+ " - " +  mpd_status.get('artist','#') + ' - ' + mpd_status.get('album','#') + ' : ' + mpd_status['state'] + ' : ' + get_uptime()
         logging.info(logdata)
 
-    if cover_only == 2:
+    if cover_only > 1:
         fb.clear()
     else:
         buffer.paste(back_img, (0, 0))
