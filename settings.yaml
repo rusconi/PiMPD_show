@@ -1,7 +1,7 @@
 #version 0.0.1
 
 # Choose between standard [0] and horizontal [1] layout
-layout: 1
+layout: 0
 
 colors:
   # set the text colors for the three lines of text and the status line colors
