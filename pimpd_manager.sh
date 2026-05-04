@@ -22,7 +22,7 @@ usage() {
     exit 1
 }
 
-Install() {
+install() {
     echo "--- Installing Service ---"
 
     # 1. Copy from Home to /opt
