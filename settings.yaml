@@ -1,0 +1,41 @@
+#version 0.0.1
+
+# Choose between standard [0] and horizontal [1] layout
+layout: 1
+
+colors:
+  # set the text colors for the three lines of text and the status line colors
+  # the numers are for RGB values 0-255
+  text1: [200, 255, 200]
+  text2: [255, 240,99]
+  text3: [200, 200, 255]
+  status: [255, 255, 0]
+
+buttons:
+  #declare the gpio pins for button actions
+  #These 4 pins were chosen to prevent conflict with spi and DACs
+  #other pins can be used if there is no conflict
+  #text button loggles text on/off
+  #pause toggles pause/play
+  #next goes to next track if playing from library ot playlist
+  #prev goes to previous track if playing from library ot playlist
+  text: 12
+  pause: 4
+  next: 6
+  prev: 5
+
+# brightness of darkened background cover as a percentage amount
+artbrighness: 37
+
+# Show mpd playing state behind text on horizontal display
+showstate: True
+
+# Logging
+# if True each screen update will be appended to the file 'moode_9341_fb.log' in the script directory
+# the format of each change appended is
+# date time: title - artist - album/station: state (play|pause|stop)
+# If running the script from your home directory
+# view the log file with 'cat ~/PiMPD_show/pimpd.log'
+# otherwise, if installed in /opt
+# view the log file with 'cat /opt/PiMPD_show/pimpd.log'
+log: False
