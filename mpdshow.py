@@ -22,7 +22,7 @@ import textwrap
 import requests
 import RPi.GPIO as GPIO
 import re
-import configparser
+#import configparser
 import logging
 
 
@@ -67,6 +67,7 @@ def load_config(confile):
             brightness = config_data.get('artbrighness')
             showstate = config_data.get('showstate')
             log = config_data['log']
+            defscreen = config_data['defaultscreen']
             
     except FileNotFoundError:
         # set defaults in case config file doesn't exist
@@ -76,10 +77,11 @@ def load_config(confile):
         brightness = 50
         showstate = False
         log = False
+        defscreen = 0
 
-    return colors, buttons, layout, brightness, showstate, log
+    return colors, buttons, layout, brightness, showstate, log, defscreen
 
-colors, buttons, layout, brightness, showstate, log = load_config(confile)
+colors, buttons, layout, brightness, showstate, log, defscreen = load_config(confile)
 
 cover_brightness = brightness / 100
 
@@ -97,9 +99,9 @@ text3_color = (text3_col[0], text3_col[1], text3_col[2], 255)
 status_col = colors.get('status')
 status_color = (status_col[0], status_col[1], status_col[2])
 
-cover_only = 0
+current_scr = defscreen
 
-song_text = configparser.ConfigParser()
+#song_text = configparser.ConfigParser()
 
 status_backgrounds = {
     "play": Image.open(script_path + '/images/play_large.png'),
@@ -132,9 +134,9 @@ def button_callback(channel):
         #print("Button 1 (Pin 17) was pressed!")
         # Add specific actions for Button 1 here
         # Change the boolean value when button presses
-        global cover_only
-        cover_only = cover_only + 1
-        if cover_only > max_cycles: cover_only = 0
+        global current_scr
+        current_scr = current_scr + 1
+        if current_scr > max_cycles: current_scr = 0
         #update display
         mpd_display(client)
     else:
@@ -392,10 +394,10 @@ def screen_fill_std(screen_text, cover_image, mpd_status, source):
     back_img.paste(dark_cover_img, (0, y_offset))
     front_img = cover_image.resize((scr_height,scr_height), Image.LANCZOS)
 
-    if cover_only == 1 or cover_only == 2:
+    if current_scr == 1 or current_scr == 2:
         back_img.paste(front_img, (int((scr_width-scr_height)/2), 0))
 
-    if cover_only < 2:
+    if current_scr < 2:
         #back_img.paste(black_scr)
         #fb.show(buffer)
    
@@ -414,7 +416,7 @@ def screen_fill_std(screen_text, cover_image, mpd_status, source):
 
     
 
-    if cover_only == 3:
+    if current_scr == 3:
         fb.clear()
     else:
         buffer.paste(back_img, (0, 0))
@@ -500,9 +502,9 @@ def screen_fill_horiz(screen_text, cover_image, mpd_status, source):
     #back_img.paste(back_cover_img, (0, -40))
 
     
-    if cover_only == 1:
+    if current_scr == 1:
         back_img.paste(big_cover, (int((scr_width-scr_height)/2), 0))
-    elif cover_only == 0:
+    elif current_scr == 0:
         back_img.paste(cover_image, (0, ypos))
         txt_back_img = add_text(screen_text['top'], txt_back_img, p_off, text1_color, script_path + '/fonts/Roboto-Medium.ttf', font_size, 18, 80)
 
@@ -523,7 +525,7 @@ def screen_fill_horiz(screen_text, cover_image, mpd_status, source):
         logdata = mpd_status.get('title','#')+ " - " +  mpd_status.get('artist','#') + ' - ' + mpd_status.get('album','#') + ' : ' + mpd_status['state'] + ' : ' + get_uptime()
         logging.info(logdata)
 
-    if cover_only > 1:
+    if current_scr > 1:
         fb.clear()
     else:
         buffer.paste(back_img, (0, 0))

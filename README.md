@@ -43,41 +43,9 @@ Installation
 
 Usage
 
-There are options for 4 buttons
-text
-pause
-next
-prev
-The settings file 'settings.yaml' describes their actions
-To edit
-```sh
-bash edit_settings.sh
-```
-This will open nano to edit the settings file in /opt/PiMPD , if you have intalled to there.
-Otherwise the settings file in your home directory will open.
-If you use another method to edit, make sure the correct file is chosen.
 
-example: to set the button to cycle the display;
-* Background + text + status, to
-* Background + full cover + text + status, to
-* Background + full cover, to
-* Blank screen, then repeat
-change
-```sh
-text: 12
-to
-text: xx
-```
-where xx is the gpio your button is connected to. That is gpio number, not physical pin.
 
-The darkness of the background image can be adjusted in settings.yaml
-the layout options between standard [e.g. 320x240] oe horizontal [e.g. 170x320] can be changed in settings.yaml
-Each time you change the settings run
-```sh
-sudo bash pimpd_manager.sh restart
-```
-so they take effect
-
+[Setting updates and operations.](SETTINGS.md)
 
    
 

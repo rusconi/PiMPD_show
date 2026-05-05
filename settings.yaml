@@ -3,6 +3,12 @@
 # Choose between standard [0] and horizontal [1] layout
 layout: 0
 
+# Choose the default start display option for the standard layout
+# options are 0 or 1
+# 0 = Background with text and status
+# 1 = Background with full cover, text and status
+defaultscreen: 0
+
 colors:
   # set the text colors for the three lines of text and the status line colors
   # the numers are for RGB values 0-255
@@ -12,13 +18,16 @@ colors:
   status: [255, 255, 0]
 
 buttons:
-  #declare the gpio pins for button actions
-  #These 4 pins were chosen to prevent conflict with spi and DACs
-  #other pins can be used if there is no conflict
-  #text button loggles text on/off
-  #pause toggles pause/play
-  #next goes to next track if playing from library ot playlist
-  #prev goes to previous track if playing from library ot playlist
+  # declare the gpio pins for button actions
+  # These 4 pins were chosen to prevent conflict with spi and DACs
+  # other pins can be used if there is no conflict
+  # text button loggles cycles throuugh
+  #   Text shown over a darkened cover [the starting display]
+  #   A cover shown over a darkened cover
+  #   A blank Screen
+  # pause toggles pause/play
+  # next goes to next track if playing from library ot playlist
+  # prev goes to previous track if playing from library ot playlist
   text: 12
   pause: 4
   next: 6
